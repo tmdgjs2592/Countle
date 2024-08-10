@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  {% block title %}
+  <img src="{{url_for('static', filename='flags/black.png')}}"  class = 'center'/>
+    {% endblock %}
+{% endblock %}
+
+
+{% block content %}
+  <form method="post">
+    <label for="username">Attempts</label>
+    <div class="form-row">
+      <input name="username" id="username" required>
+      <input type="submit" value="GUESS">
+    </div>
+  </form>
+{% endblock %}
