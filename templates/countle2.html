@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  html {
+    font-family: sans-serif;
+    background: #0f5672;
+    padding: 1rem;
+  }
+  body {
+    max-width: 960px;
+    margin: 0 auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  h1 {
+    font-family: serif;
+    color: #377ba8;
+    margin: 1rem 0;
+  }
+  a {
+    color: #377ba8;
+  }
+  hr {
+    border: none;
+    border-top: 1px solid lightgray;
+  }
+  nav {
+    background: lightgray;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 8px;
+  }
+  nav h1 {
+    flex: auto;
+    margin: 0;
+  }
+  nav h1 a {
+    text-decoration: none;
+    padding: 0.25rem 0.5rem;
+  }
+  nav ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  nav ul li a,
+  nav ul li span,
+  header .action {
+    display: block;
+    padding: 0.5rem;
+  }
+  .content {
+    padding: 0 1rem 1rem;
+  }
+  .content > header {
+    border-bottom: 1px solid lightgray;
+    display: flex;
+    align-items: flex-end;
+  }
+  .content > header h1 {
+    flex: auto;
+    margin: 1rem 0 0.25rem 0;
+  }
+  .flash {
+    margin: 1em 0;
+    padding: 1em;
+    background: #cae6f6;
+    border: 1px solid #377ba8;
+  }
+  .post > header {
+    display: flex;
+    align-items: flex-end;
+    font-size: 0.85em;
+  }
+  .post > header > div:first-of-type {
+    flex: auto;
+  }
+  .post > header h1 {
+    font-size: 1.5em;
+    margin-bottom: 0;
+  }
+  .post .about {
+    color: slategray;
+    font-style: italic;
+  }
+  .post .body {
+    white-space: pre-line;
+  }
+  .content:last-child {
+    margin-bottom: 0;
+  }
+  .content form {
+    margin: 1em 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .content label {
+    font-family: sans-serif;
+    color: #377ba8;
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-bottom: 0.5em;
+  }
+  .content input,
+  .content textarea {
+    width: 90%;
+    padding: 10px;
+    border: none;
+    border-bottom: 2px solid #ccc;
+    background-color: transparent;
+    display: flex;
+  }
+  input:focus {
+    outline: none;
+    border-bottom-color: #213f75;
+  }
+  .content textarea {
+    min-height: 12em;
+    resize: vertical;
+  }
+  input.danger {
+    color: #cc2f2e;
+  }
+  input[type=submit] {
+    display: flex;
+    font-family: sans-serif;
+    align-self: start;
+    min-width: 10em;
+    font-weight: bold;
+    border: 2px solid #ccc;
+  }
+  .center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 20%;
+  }
+  .form-row {
+    display: flex;
+    align-items: center;
+  }
+  .form-row input {
+    margin-right: 1em;
+    flex: 1;
+  }
+  .form-row input[type=submit] {
+    flex: initial;
+  }
+  .guess-list {
+    margin-top: 1em;
+  }
+  .guess-item {
+    padding: 0.5em 0;
+    border-bottom: 1px solid lightgray;
+  }
+</style>
+<title>Countle</title>
+</head>
+<body>
+  <nav>
+    <h1><a href="#">Countle</a></h1>
+  </nav>
+  <div class="content">
+    <form method="post">
+      <div class="form-row">
+        <label for="username">Attempts</label>
+        <input name="username" id="username" required>
+        <input type="submit" value="GUESS">
+      </div>
+    </form>
+    <div class="guess-list">
+      <h2>Previous Guesses</h2>
+      {% for guess in guesses %}
+        <div class="guess-item">
+          <p>Guess: {{ guess['guess'] }} | Similarity: {{ guess['similarity_score'] }}</p>
+        </div>
+      {% endfor %}
+    </div>
+    <p>Attempts left: {{ attempts_left }}</p>
+  </div>
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul class="flash">
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+</body>
+</html>
