@@ -2,7 +2,7 @@ import functools
 
 from flask import (Blueprint, flash, g, redirect, render_template, request, session, url_for)
 from werkzeug.security import check_password_hash, generate_password_hash
-from similarity.db import get_db
+from Countle.db import get_db
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -56,20 +56,50 @@ def login():
         flash (error)
     return render_template('login.html')
 
+
+def calculate_similarity(guess, target_word):
+    # Implement your similarity calculation logic here
+    # For now, return a stub value
+    return 0.0
+
 @bp.route('/countle', methods=('GET', 'POST'))
 def countle():
-    if request.method == 'POST':
-        #guess = request.form['guess']
-        db = get_db()
-        error = None
-        
-        flash (error)
     return render_template('countle.html')
+'''
+@bp.route('/countle', methods=('GET', 'POST'))
+def countle():
+    db = get_db()
+    error = None
 
-@bp.route('/countle2', methods=('GET', 'POST'))
-def countle2():
-    return render_template('countle2.html')
+    # Fetch the current target word
+    target_word = db.execute('SELECT word FROM target_word LIMIT 1').fetchone()
 
+    if not target_word:
+        # Set a default target word if none is present
+        target_word = 'sushi'
+        db.execute('INSERT INTO target_word (word, date) VALUES (?, CURRENT_DATE)', (target_word,))
+        db.commit()
+
+    if request.method == 'POST':
+        # Get user input
+        username = request.form['username']
+        guess = request.form['guess']
+
+        if not username or not guess:
+            error = 'Username and guess are required.'
+        else:
+            # Calculate similarity (stub for actual calculation)
+            similarity_score = calculate_similarity(guess, target_word['word'])
+
+            # Store the user guess
+            db.execute(
+                'INSERT INTO user_guess (username, guess, similarity_score) VALUES (?, ?, ?)',
+                (username, guess, similarity_score)
+            )
+            db.commit()
+
+            flash(f'Your guess: {guess}, Similarity score: {similarity_score}')
+'''
 
 @bp.before_app_request
 def load_logged_in_user():
