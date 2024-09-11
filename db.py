@@ -2,6 +2,7 @@ import sqlite3
 
 import click
 from flask import current_app, g
+import random
 
 def get_db():
     if 'db' not in g:
@@ -24,6 +25,20 @@ def init_db():
 
     with current_app.open_resource('schema.sql') as f:
         db.executescript(f.read().decode('utf8'))
+
+    db.execute("DELETE FROM target_word")
+
+    countries = [
+        "United States", "Canada", "Mexico", "Germany", "France",
+        "Spain", "Italy", "United Kingdom", "Brazil", "India",
+        "China", "Japan", "Russia", "Australia", "South Africa"
+    ]
+
+    word = random.choice(countries)
+
+    db.execute("INSERT INTO target_word (word) VALUES (?)", (word, ))
+
+    db.commit()
 
 @click.command('init-db')
 def init_db_command():

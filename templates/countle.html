@@ -1,5 +1,10 @@
 {% extends 'base.html' %}
 
+{% block button %}
+    <input type="submit" value="NEW WORD" name="word_butt">
+{% endblock %}
+
+
 {% block header %}
   {% block title %}
   <img src="{{url_for('static', filename='flags/black.png')}}"  class = 'center'/>
@@ -9,10 +14,15 @@
 
 {% block content %}
   <form method="post">
-    <label for="username">Attempts</label>
+    <label for="guess">Attempts</label>
     <div class="form-row">
-      <input name="username" id="username" required>
-      <input type="submit" value="GUESS">
+      <input name="guess" id="guess" required>
+      <input type="submit" value="SIMILARITY" name="compare_butt">
+      <input type="submit" value="GUESS" name="guess_butt">
     </div>
   </form>
+  {% if result %}
+    <p>{{ result }}</p>
+  {% endif %}
 {% endblock %}
+

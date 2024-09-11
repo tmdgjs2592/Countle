@@ -1,13 +1,14 @@
 import functools
 
-from flask import (Blueprint, flash, g, redirect, render_template, request, session, url_for)
+from flask import (Blueprint, flash, g, redirect, render_template, request, session, url_for, current_app)
 from werkzeug.security import check_password_hash, generate_password_hash
-from Countle.db import get_db
+from Countle.db import get_db, init_db
+from gensim.models import KeyedVectors
+import random
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 @bp.route('/register', methods=('GET', 'POST'))
-
 def register():
     if request.method == 'POST':
         username = request.form['username']
@@ -57,14 +58,58 @@ def login():
     return render_template('login.html')
 
 
-def calculate_similarity(guess, target_word):
-    # Implement your similarity calculation logic here
-    # For now, return a stub value
-    return 0.0
+def calculate_similarity(word, country, model):
+    try:
+        similarity = model.similarity(word, country)
+        return similarity
+    except KeyError as e:
+        return None  # Return None if the word or country is not in the model's vocabulary
 
 @bp.route('/countle', methods=('GET', 'POST'))
 def countle():
-    return render_template('countle.html')
+    db = get_db()
+    result = None
+
+    model = current_app.config['WORD2VEC_MODEL']
+
+    target_word_row = db.execute('SELECT word FROM target_word LIMIT 1').fetchone()
+    target_word = target_word_row['word'] if target_word_row else None 
+
+    if request.method == 'POST' and 'word_butt' in request.form:
+
+        db.execute("DELETE FROM target_word")
+
+        countries = [
+            "United States", "Canada", "Mexico", "Germany", "France",
+            "Spain", "Italy", "United Kingdom", "Brazil", "India",
+            "China", "Japan", "Russia", "Australia", "South Africa"
+        ]
+        
+        word = random.choice(countries)
+        db.execute("INSERT INTO target_word (word) VALUES (?)", (word,))
+        db.commit()
+
+        target_word_row = db.execute('SELECT word FROM target_word LIMIT 1').fetchone()
+        target_word = target_word_row['word'] if target_word_row else None
+        result = f"New word generated: {target_word}"
+
+        guess = request.form['guess']
+
+    elif request.method == 'POST':
+        guess = request.form['guess']
+        if guess.strip():
+            if 'guess_butt' in request.form:
+                if guess == target_word:
+                    result = "correct"
+                elif guess != target_word:
+                    result = "incorrect"
+
+            elif 'compare_butt' in request.form:
+                score = calculate_similarity(guess, target_word, model)
+                result = f"similarity = {score}"
+    
+    return render_template('countle.html', result=result)
+
 '''
 @bp.route('/countle', methods=('GET', 'POST'))
 def countle():
