@@ -1,14 +1,21 @@
 {% extends 'base.html' %}
 
 {% block button %}
-    <input type="submit" value="NEW WORD" name="word_butt">
+  <form method="post">
+    <input type="submit" value="NEW_WORD" name="word_butt">
+  </form>
+    
 {% endblock %}
 
 
 {% block header %}
   {% block title %}
-  <img src="{{url_for('static', filename='flags/black.png')}}"  class = 'center'/>
-    {% endblock %}
+    {% if correct %}
+    <img src="{{ url_for('static', filename='flags/' + result + '.png') }}" class="center" />
+    {% else %}
+      <img src="{{url_for('static', filename='flags/black.png')}}"  class = 'center'/>
+    {% endif %}
+  {% endblock %}
 {% endblock %}
 
 
