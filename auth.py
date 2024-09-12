@@ -71,6 +71,7 @@ def countle():
     db = get_db()
     result = None
     correct = False
+    country = ""
 
     model = current_app.config['WORD2VEC_MODEL']
 
@@ -89,7 +90,7 @@ def countle():
             
             word = random.choice(countries)
             current_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')  # Get current timestamp
-            db.execute("INSERT INTO target_word (word, date) VALUES (?, ?)", (word, current_date))
+            db.execute("INSERT INTO target_word (word) VALUES (?)", (word, ))
             db.commit()
 
             target_word_row = db.execute('SELECT word FROM target_word LIMIT 1').fetchone()
@@ -100,16 +101,14 @@ def countle():
             if guess.strip():
                 if 'guess_butt' in request.form:
                     if guess == target_word:
-                        result = target_word.lower()
+                        country = target_word.lower()
                         correct = True
-                    elif guess != target_word:
-                        result = "incorrect"
 
                 elif 'compare_butt' in request.form:
                     score = calculate_similarity(guess, target_word, model)
                     result = f"similarity = {score}"
 
-    return render_template('countle.html', result=result, correct=correct)
+    return render_template('countle.html', result=result, correct=correct, country = country)
 
 '''
 @bp.route('/countle', methods=('GET', 'POST'))

@@ -12,8 +12,8 @@ def create_app(test_config=None):
         DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
     )
 # /Users/johnlee/Downloads/GoogleNews-vectors-negative300.bin
-# '/Users/tmdgj/Downloads/GoogleNews-vectors-negative300.bin/GoogleNews-vectors-negative300.bin'
-    model_path = '/Users/johnlee/Downloads/GoogleNews-vectors-negative300.bin'  # Update the path to your model file
+# /Users/tmdgj/Downloads/GoogleNews-vectors-negative300.bin/GoogleNews-vectors-negative300.bin
+    model_path = '/Users/tmdgj/Downloads/GoogleNews-vectors-negative300.bin/GoogleNews-vectors-negative300.bin'  # Update the path to your model file
     app.config['WORD2VEC_MODEL'] = KeyedVectors.load_word2vec_format(model_path, binary=True)
 
     if test_config is None:

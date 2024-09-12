@@ -7,13 +7,12 @@
     
 {% endblock %}
 
-
 {% block header %}
   {% block title %}
     {% if correct %}
-    <img src="{{ url_for('static', filename='flags/' + result + '.png') }}" class="center" />
+      <img id="flag-image" src="{{ url_for('static', filename='flags/' + country + '.png') }}" class="center flag" />
     {% else %}
-      <img src="{{url_for('static', filename='flags/black.png')}}"  class = 'center'/>
+      <img id="flag-image" src="{{url_for('static', filename='flags/black.png')}}" class="center flag" />
     {% endif %}
   {% endblock %}
 {% endblock %}
@@ -28,8 +27,38 @@
       <input type="submit" value="GUESS" name="guess_butt">
     </div>
   </form>
+
   {% if result %}
-    <p>{{ result }}</p>
+    <p> {{ result }} </p>
   {% endif %}
 {% endblock %}
 
+{% block javascript %}
+  
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const isCorrect = {{ correct|tojson }};
+      
+      const flagImage = document.getElementById('flag-image');
+      flagImage.style.opacity = 0;
+      setTimeout(() => {
+        flagImage.style.opacity = 1;
+      }, 50); // Delay to make the transition visible
+
+      if (isCorrect) {
+        // Trigger confetti effect when the answer is correct
+        confetti({
+          particleCount: 200,
+          spread: 100,
+          origin: { y: 0.6 }
+        });
+        
+      }
+      
+    });
+  </script>
+
+{% endblock %}

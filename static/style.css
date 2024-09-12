@@ -83,3 +83,21 @@ flex: 2;
 .form-row input[type=submit] {
   flex: initial;
 }
+
+.flag-container {
+  text-align: center;
+  padding: 20px;
+}
+
+.flag {
+  width: 300px;
+  height: auto;
+  transition: opacity 1s ease-in-out; /* Smooth opacity transition */
+}
+
+/* Center the flag and content */
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
